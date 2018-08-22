@@ -7,6 +7,7 @@ H5页面适合场景：
 H5页面不足的地方表现在软件运行速度容易受网络影响，对于摄像头、陀螺仪等硬件支持较差，开发出来的应用性能较差，不适合处理较复杂的逻辑等等。
 
 H5的优势：
+
 1、页面丰硕简练。H5技巧完成的网站也等于常说的相应式计划，改良了页面多媒体元素的应用成绩，以前建站页面主意削减动画、视频等的应用，因为所占的网站资本空间多，招致页面加载速率慢的环境，但现在应用H5建站，不只能够勇敢应用这些元素，且无需担忧阅读不顺畅的成绩，同时让页面显得加倍丰硕，又能包管其整齐性。
 
 2、有利于网站优化。一个网站若不克不及很好的应用互联网资本，那末建站的代价就已不复存在，此中搜索引擎这个大平台便是资本应用的一个好渠道，由此网站必定少不了优化。H5技巧所应用的代码法式相对付旧时的编程来讲要简练得多，且应用多媒体的环境下，对搜索引擎的抓取也是异常友好的，是以网站优化起来加倍轻松。
@@ -56,24 +57,43 @@ function init(){
 webview中必要的属性设置：
 
 WebSettings webSettings =  myWebView.getSettings(); 
+
 webSettings.setDefaultTextEncodingName("utf-8");//设置编码格式
+
 webSettings.setWebViewClient(newWebViewClient());//限制在webview中打开网页，不用默认浏览器
+
 webSettings.getSettings().setBuiltInZoomControls();//设置是否支持缩放
+
 webSettings.addJavascriptInterface(obj,str);//向html页面注入java对象
+
 webSettings.setUseWideViewPort(true);//设置此属性，可任意比例缩放
-webSettings.setLoadWithOverviewMode(true);// 页面支持缩放：   
+
+webSettings.setLoadWithOverviewMode(true);// 页面支持缩放：
+
 webSettings.setJavaScriptEnabled(true);  
+
 webSettings.setBuiltInZoomControls(true);
+
 webUrl.requestFocusFromTouch(); //如果webView中需要用户手动输入用户名、密码或其他，则webview必须设置支持获取手势焦点。
+
 webSettings.setJavaScriptEnabled(true);  //支持js     
+
 webSettings.setUseWideViewPort(false);  //将图片调整到适合webview的大小 
+
 webSettings.setSupportZoom(true);  //支持缩放    webSettings.setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN); //支持内容重新布局  
+
 webSettings.supportMultipleWindows();  //多窗口 
+
 webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);  //关闭webview中缓存 
+
 webSettings.setAllowFileAccess(true);  //设置可以访问文件 
+
 webSettings.setNeedInitialFocus(true); //当webview调用requestFocus时为webview设置节点
+
 webSettings.setJavaScriptCanOpenWindowsAutomatically(true); //支持通过JS打开新窗口 
+
 webSettings.setLoadWithOverviewMode(true); // 缩放至屏幕的大小
+
 webSettings.setLoadsImagesAutomatically(true);  //支持自动加载图片
 
 
