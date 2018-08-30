@@ -1,16 +1,26 @@
 package com.example.frank.httploadnocache;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.webkit.JavascriptInterface;
+import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -22,29 +32,79 @@ public class MainActivity extends AppCompatActivity {
     public ValueCallback<Uri[]> uploadMessage;
     public static final int REQUEST_SELECT_FILE = 100;
     private final static int FILECHOOSER_RESULTCODE = 2;
-    private String URL="http://shequ.tunnel.qydev.com/protal/login";
+    private String URL = "http://shequ.tunnel.qydev.com/protal/login";
 
-    private WebView mWebView ;
+    private WebView mWebView;
 
+
+    @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
+        if (actionBar != null) {
             actionBar.hide();
         }
 
-        Intent intent=getIntent();
-        if (intent!=null&&intent.getStringExtra("url")!=null){
-            URL=intent.getStringExtra("url");
+        Intent intent = getIntent();
+        if (intent != null && intent.getStringExtra("url") != null) {
+            URL = intent.getStringExtra("url");
         }
-        mWebView = (WebView)findViewById(R.id.web_view);
+        mWebView = (WebView) findViewById(R.id.web_view);
 
-        mWebView.setWebViewClient(new WebViewClient(){
-            @Override
+        mWebView.setWebViewClient(new WebViewClient() {
+            /*@Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 return false;// 返回false
+            }*/
+
+            @Override
+            public boolean shouldOverrideUrlLoading
+                    (WebView view, String url) {
+                Log.i("用户单击超连接", url);
+                //判断用户单击的是那个超连接
+                String tag = "tel";
+                String chat="chat";
+
+                if (url.contains(tag)) {
+                    String mobile = url.substring(url.lastIndexOf("/") + 1);
+                    Uri uri = Uri.parse("tel:" + mobile);
+                    Intent intent = new Intent(Intent.ACTION_CALL, uri);
+                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return true;
+                    }
+                    startActivity(intent);
+                    //这个超连接,java已经处理了，webview不要处理了
+                    return true;
+                }
+                else if (url.contains(chat)){
+                    try {
+                        /*Intent in = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        startActivity(in);*/
+                        startActivity(Intent.parseUri(url, Intent.URI_INTENT_SCHEME));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+                return super.shouldOverrideUrlLoading(view, url);
+            }
+
+
+        });
+
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            public boolean onJsAlert(WebView view, String url, String message,
+                                     JsResult result) {
+                return super.onJsAlert(view, url, message, result);
             }
         });
 
@@ -71,8 +131,12 @@ public class MainActivity extends AppCompatActivity {
         // 设置默认字体大小
        // webSettings.setDefaultFontSize(12);
 
-        mWebView.loadUrl(URL);
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setDefaultTextEncodingName("utf-8");
 
+
+        mWebView.loadUrl(URL);
+       // CookieUtil.syncCookie(getContext(), mainUrl);//同步session实现登陆
 
         mWebView.setWebChromeClient(new WebChromeClient(){
             // For 3.0+ Devices (Start)
@@ -130,6 +194,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent)
     {
@@ -158,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK) ) {
@@ -175,5 +240,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
+
 
 }
